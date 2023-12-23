@@ -13,8 +13,8 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="388dp"
-        android:layout_height="39dp"
+        android:layout_width="316dp"
+        android:layout_height="59dp"
         android:layout_marginTop="220dp"
         android:autofillHints="@string/username"
         android:hint="@string/username"

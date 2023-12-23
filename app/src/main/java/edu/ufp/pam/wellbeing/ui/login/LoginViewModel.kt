@@ -1,13 +1,13 @@
 package edu.ufp.pam.wellbeing.ui.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
 import edu.ufp.pam.wellbeing.data.LoginRepository
-import edu.ufp.pam.wellbeing.data.Result
 
 import edu.ufp.pam.wellbeing.R
+import edu.ufp.pam.wellbeing.data.model.User
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -17,12 +17,13 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(username: String) {
-        val result = loginRepository.login(username)
+    fun login(user: User) {
+        val result = loginRepository.login(user)
+        Log.d("LOGINRESULT",result.toString())
 
-        if (result is Result.Success) {
+        if (user.displayName.length >= 5) {
             _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+                LoginResult(success = LoggedInUserView(displayName = user.displayName))
         } else {
             _loginResult.value = LoginResult(error = R.string.login_failed)
         }

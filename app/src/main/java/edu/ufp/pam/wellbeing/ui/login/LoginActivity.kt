@@ -8,12 +8,14 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import edu.ufp.pam.wellbeing.databinding.ActivityLoginBinding
 
 import edu.ufp.pam.wellbeing.R
+import edu.ufp.pam.wellbeing.data.model.User
 
 class LoginActivity : AppCompatActivity() {
 
@@ -30,9 +32,9 @@ class LoginActivity : AppCompatActivity() {
         val login = binding.login
         val loading = binding.loading
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        val factory = LoginViewModelFactory.createFactory(application)
 
+        loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
@@ -46,18 +48,19 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
-
+            Log.d("teste","Trying to login")
             loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+            if (username.text.toString().length < 5) {
+                showLoginFailed(loginResult.error!!)
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            if (username.text.toString().length >= 5) {
+                updateUiWithUser(loginResult.success!!)
+                finish()
+
             }
             setResult(Activity.RESULT_OK)
 
             //Complete and destroy login activity once successful
-            finish()
         })
 
         username.afterTextChanged {
@@ -65,6 +68,12 @@ class LoginActivity : AppCompatActivity() {
                 username.text.toString()
             )
         }
+        login.setOnClickListener {
+            val newUser = User(username.text.toString())
+
+            loginViewModel.login(newUser)
+        }
+
 
     }
 
