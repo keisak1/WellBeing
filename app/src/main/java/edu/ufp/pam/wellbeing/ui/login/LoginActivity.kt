@@ -12,10 +12,12 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import edu.ufp.pam.wellbeing.databinding.ActivityLoginBinding
 
 import edu.ufp.pam.wellbeing.R
 import edu.ufp.pam.wellbeing.data.model.User
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -71,7 +73,10 @@ class LoginActivity : AppCompatActivity() {
         login.setOnClickListener {
             val newUser = User(username.text.toString())
 
-            loginViewModel.login(newUser)
+            lifecycleScope.launch {
+                // Call the login function from within a coroutine
+                loginViewModel.login(newUser)
+            }
         }
 
 

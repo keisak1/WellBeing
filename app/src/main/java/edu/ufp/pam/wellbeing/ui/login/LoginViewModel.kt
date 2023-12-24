@@ -8,6 +8,7 @@ import edu.ufp.pam.wellbeing.data.LoginRepository
 
 import edu.ufp.pam.wellbeing.R
 import edu.ufp.pam.wellbeing.data.model.User
+import edu.ufp.pam.wellbeing.data.model.UserDAO
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -17,11 +18,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(user: User) {
-        val result = loginRepository.login(user)
-        Log.d("LOGINRESULT",result.toString())
+    suspend fun login(user: User) {
 
         if (user.displayName.length >= 5) {
+            loginRepository.login(user)
             _loginResult.value =
                 LoginResult(success = LoggedInUserView(displayName = user.displayName))
         } else {
