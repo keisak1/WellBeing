@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.WellBeing" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.WellBeing" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.WellBeing.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.WellBeing.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.WellBeing.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

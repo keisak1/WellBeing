@@ -1,6 +1,7 @@
 package edu.ufp.pam.wellbeing.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import edu.ufp.pam.wellbeing.HomePageActivity
 import edu.ufp.pam.wellbeing.databinding.ActivityLoginBinding
 
 import edu.ufp.pam.wellbeing.R
@@ -57,12 +59,19 @@ class LoginActivity : AppCompatActivity() {
             }
             if (username.text.toString().length >= 5) {
                 updateUiWithUser(loginResult.success!!)
+
+                val intent = Intent(this, HomePageActivity::class.java)
+
+                intent.putExtra("username", username.text.toString())
+
+                startActivity(intent)
                 finish()
 
             }
             setResult(Activity.RESULT_OK)
 
-            //Complete and destroy login activity once successful
+
+
         })
 
         username.afterTextChanged {
