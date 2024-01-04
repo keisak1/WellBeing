@@ -1,9 +1,7 @@
 package edu.ufp.pam.wellbeing.data
 
-import android.content.Context
 import android.util.Log
 import edu.ufp.pam.wellbeing.data.model.User
-import edu.ufp.pam.wellbeing.data.model.UserDAO
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -31,25 +29,20 @@ class LoginRepository(val dataSource: LoginDataSource) {
     }
 
     suspend fun login(user: User): User{
-        // handle login
-        val result = dataSource.login(user)
 
-
-        when (result) {
+        when (val result = dataSource.login(user)) {
             is Result.UserInserted -> {
                 setLoggedInUser(user)
                 Log.d("DATABASE", "User inserted into DB. UserId: $user.id")
                 return user
             }
             is Result.UserExists -> {
-                val existingUser = User("1","1")
                 Log.d("DATABASE", "User already exists, attempting to login with credentials")
-                if(result.user != null) {
-                    setLoggedInUser(result.user)
+                if (result.user != null) {
+                    setLoggedInUser(user)
                     return user
                 }
-                setLoggedInUser(existingUser)
-                return existingUser
+                return User("1", "1")
             }
             is Result.DatabaseError -> {
                 Log.d("DATABASEERROR", result.errorMessage)
