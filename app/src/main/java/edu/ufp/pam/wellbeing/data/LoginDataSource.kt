@@ -13,19 +13,27 @@ import java.io.IOException
 class LoginDataSource(application : Application) {
     private val database = UserDataBase.getInstance(application)
 
-    suspend fun login(user: User): Int {
+    suspend fun login(user: User): Result<Int> {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("DATABASE", "Trying to insert into DB")
-                database.insert(user)
-                Log.d("DATABASE", "Inserted in database")
-                return@withContext 0
+                if (database.getUser(user) == null) {
+                    database.insert(user)
+                    return@withContext Result.UserInserted(user.id)
+                } else {
+                    var existingUser: User? = null
+                    if(database.getUserByCredentials(user) != null) {
+                        existingUser = database.getUserByCredentials(user)
+                    }
+                    return@withContext Result.UserExists(existingUser)
+                }
             } catch (e: IOException) {
-                Log.d("DATABASEERROR", e.message.toString())
-                return@withContext 1
+                val errorMessage = "Database error: ${e.message}"
+                Log.e("DATABASEERROR", errorMessage)
+                return@withContext Result.DatabaseError(errorMessage)
             }
         }
     }
+
     fun logout() {
         // TODO: revoke authentication
     }

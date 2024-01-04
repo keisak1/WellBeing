@@ -10,7 +10,7 @@ import edu.ufp.pam.wellbeing.data.model.User
 import edu.ufp.pam.wellbeing.data.model.UserDAO
 
 
-@Database(entities = [User::class], version = 1)
+@Database(entities = [User::class], version = 2)
 abstract class UserDataBase : RoomDatabase() {
 
     abstract fun userDao(): UserDAO
@@ -44,5 +44,12 @@ abstract class UserDataBase : RoomDatabase() {
         userDao().insert(user)
     }
 
+    fun getUser(user: User): User? {
+       return userDao().getUserByDisplayName(user.displayName)
+    }
+
+    fun getUserByCredentials(user: User) : User?{
+        return userDao().getUserByCredentials(user.displayName, user.password)
+    }
 
 }

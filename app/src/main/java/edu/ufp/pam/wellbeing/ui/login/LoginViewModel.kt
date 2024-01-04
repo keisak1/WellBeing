@@ -21,9 +21,11 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     suspend fun login(user: User) {
 
         if (user.displayName.length >= 5) {
-            loginRepository.login(user)
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = user.displayName))
+            if (user == loginRepository.login(user)) {
+
+                _loginResult.value =
+                    LoginResult(success = LoggedInUserView(displayName = user.displayName))
+            }
         } else {
             _loginResult.value = LoginResult(error = R.string.login_failed)
         }

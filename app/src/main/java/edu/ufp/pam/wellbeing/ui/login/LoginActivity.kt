@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val username = binding.username
+        val password = binding.password
         val login = binding.login
         val loading = binding.loading
 
@@ -53,12 +54,22 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
             Log.d("teste","Trying to login")
-            loading.visibility = View.GONE
-            if (username.text.toString().length < 5) {
-                showLoginFailed(loginResult.error!!)
+            loading.visibility = View.VISIBLE
+
+            if(loginResult.error != null){
+                showLoginFailed(R.string.wrong_password)
+                Log.d("CHECK","Failed")
             }
-            if (username.text.toString().length >= 5) {
+
+            if (username.text.toString().length < 5 || password?.text.toString().length < 5) {
+                showLoginFailed(R.string.login_failed)
+                loading.visibility = View.GONE
+                Log.d("CHECK","Failed")
+
+            }
+            if (username.text.toString().length >= 5 && password?.text.toString().length >= 5 ) {
                 updateUiWithUser(loginResult.success!!)
+                Log.d("CHECK","Passed everything")
 
                 val intent = Intent(this, HomePageActivity::class.java)
 
@@ -80,13 +91,15 @@ class LoginActivity : AppCompatActivity() {
             )
         }
         login.setOnClickListener {
-            val newUser = User(username.text.toString())
+            val newUser = User(username.text.toString(), password?.text.toString())
 
             lifecycleScope.launch {
                 // Call the login function from within a coroutine
                 loginViewModel.login(newUser)
             }
         }
+
+
 
 
     }
