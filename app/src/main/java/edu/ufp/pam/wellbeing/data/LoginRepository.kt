@@ -42,10 +42,11 @@ class LoginRepository(val dataSource: LoginDataSource) {
                 return user
             }
             is Result.UserExists -> {
-                var existingUser = User("1","1")
+                val existingUser = User("1","1")
                 Log.d("DATABASE", "User already exists, attempting to login with credentials")
                 if(result.user != null) {
-                    existingUser = result.user
+                    setLoggedInUser(result.user)
+                    return user
                 }
                 setLoggedInUser(existingUser)
                 return existingUser
