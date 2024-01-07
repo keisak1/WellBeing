@@ -35,6 +35,5 @@ class LoginDataSource(application : Application) {
     }
 
     fun logout() {
-        // TODO: revoke authentication
     }
 }

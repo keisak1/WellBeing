@@ -1,7 +1,10 @@
 package edu.ufp.pam.wellbeing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -12,7 +15,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import edu.ufp.pam.wellbeing.databinding.ActivityHomePageBinding
+import edu.ufp.pam.wellbeing.ui.login.LoginActivity
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -50,14 +55,32 @@ class HomePageActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.home_page, menu)
         return true
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_home_page)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    // Handle menu item selection in onOptionsItemSelected
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                performLogout()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun performLogout() {
+        // Clear user data, session, tokens, etc. (You will implement this next)
+
+        // Navigate to LoginActivity
+        navigateToLoginActivity()
+    }
+
+    private fun navigateToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finishAffinity() // Optional: Close all previous activities
     }
 }
