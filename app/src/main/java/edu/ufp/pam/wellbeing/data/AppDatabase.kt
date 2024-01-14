@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import edu.ufp.pam.wellbeing.data.model.Answer
 import edu.ufp.pam.wellbeing.data.model.Question
 import edu.ufp.pam.wellbeing.data.model.Survey
@@ -96,7 +97,9 @@ val wellbeing2Survey = Survey(
 )
 
 
-@Database(entities = [Survey::class, Question::class, Answer::class], version = 1, exportSchema = false)
+@Database(entities = [Survey::class, Question::class, Answer::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class) // Add this line to include your TypeConverters
+
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun surveyDao(): SurveyDao
@@ -111,7 +114,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "wellbeing"
-                ).build()
+                )            .fallbackToDestructiveMigration() // Use with caution
+                    .build()
                 INSTANCE = instance
                 instance
             }

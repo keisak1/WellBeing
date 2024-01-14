@@ -2,6 +2,7 @@ package edu.ufp.pam.wellbeing.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "surveys")
 data class Survey(
