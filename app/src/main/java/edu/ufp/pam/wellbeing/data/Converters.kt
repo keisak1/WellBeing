@@ -18,19 +18,4 @@ object Converters {
         return Json.encodeToString(list)
     }
 
-    @TypeConverter
-    fun fromIntRange(intRange: IntRange?): String? {
-        return intRange?.let { "${it.first},${it.last}" }
-    }
-
-    @TypeConverter
-    fun toIntRange(value: String?): IntRange? {
-        return value?.split(",")?.let {
-            if (it.size == 2) {
-                IntRange(it[0].toInt(), it[1].toInt())
-            } else {
-                null
-            }
-        }
-    }
 }

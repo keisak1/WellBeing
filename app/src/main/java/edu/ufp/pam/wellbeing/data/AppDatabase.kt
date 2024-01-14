@@ -20,13 +20,15 @@ val sleepSurvey = Survey(
             surveyId = 1,
             text = "I slept very well and feel that my sleep was totally restorative.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 1,
             text = "I feel totally rested after this night's sleep.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         )
     ),
     category = "Sleep"
@@ -40,31 +42,36 @@ val wellbeing1Survey = Survey(
             surveyId = 2,
             text = "I related easily to the people around me.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 2,
             text = "I was able to face difficult situations in a positive way.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 2,
             text = "I felt that others liked me and appreciated me.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 2,
             text = "I felt satisfied with what I was able to achieve, I felt proud of myself.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 2,
             text = "My life was well balanced between my family, personal and academic activities.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         )
     ),
     category = "Wellbeing"
@@ -78,19 +85,22 @@ val wellbeing2Survey = Survey(
             surveyId = 3,
             text = "I felt emotionally balanced.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 3,
             text = "I felt good, at peace with myself.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         ),
         Question(
             surveyId = 3,
             text = "I felt confident.",
             type = "Scale",
-            scale = 1..3
+            intMin = 1,
+            intMax = 3
         )
     ),
     category = "Wellbeing"

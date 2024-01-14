@@ -3,6 +3,7 @@ package edu.ufp.pam.wellbeing.data.model
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface SurveyDao {
@@ -16,6 +17,7 @@ interface SurveyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnswer(answer: Answer)
 
-    // Additional DAO methods for other entities like Answer if needed
+    @Query("SELECT * FROM surveys")
+    fun getAllSurveys(): List<Survey>
 }
 
