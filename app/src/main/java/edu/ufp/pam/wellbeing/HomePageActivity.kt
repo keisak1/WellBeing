@@ -47,10 +47,6 @@ class HomePageActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarHomePage.toolbar)
 
-        binding.appBarHomePage.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         val selectedSurveys: List<Survey> = SurveyRepository.getSurveys()
         val drawerLayout: DrawerLayout = binding.drawerLayout
@@ -62,21 +58,18 @@ class HomePageActivity : AppCompatActivity() {
         val staticItems = setOf(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
         val allDestinations = staticItems.toMutableSet()
 
-        selectedSurveys.forEach { survey ->
-            if (SurveyRepository.getSurveys().contains(survey)) {
-                selectedSurveys.forEachIndexed { index, survey2 ->
-                    val menuItemId = index + 1000
-                    val menuItem =
-                        navView.menu.add(R.id.nav_slideshow, menuItemId, Menu.NONE, survey2.title)
-                    menuItem.icon =
-                        ContextCompat.getDrawable(this@HomePageActivity, R.drawable.ic_menu_gallery)
-                    menuItem.setOnMenuItemClickListener {
-                        navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey2.id))
-                        true
-                    }
-                    allDestinations.add(menuItemId)
-                }
+
+        selectedSurveys.forEachIndexed { index, survey ->
+            val menuItemId = index + 1000
+            val menuItem =
+                navView.menu.add(R.id.nav_slideshow, menuItemId, Menu.NONE, survey.title)
+            menuItem.icon =
+                ContextCompat.getDrawable(this@HomePageActivity, R.drawable.ic_menu_gallery)
+            menuItem.setOnMenuItemClickListener {
+                navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey.id))
+                true
             }
+            allDestinations.add(menuItemId)
         }
 
         Log.d("DRAWER", allDestinations.toString())

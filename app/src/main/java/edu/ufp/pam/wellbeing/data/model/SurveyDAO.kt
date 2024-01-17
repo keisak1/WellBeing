@@ -11,6 +11,9 @@ interface SurveyDao {
     @Query("SELECT * FROM surveys WHERE title = :title")
     suspend fun getSurveyByIdentifier(title: String): Survey?
 
+    @Query("SELECT * FROM surveys WHERE id = :id")
+    fun getSurveyById(id: Int): Survey?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSurvey(survey: Survey)
 
@@ -19,6 +22,9 @@ interface SurveyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnswer(answer: Answer)
+
+    @Insert
+    suspend fun insertResult(result: Result)
 
     @Query("SELECT * FROM surveys")
     fun getAllSurveys(): List<Survey>
