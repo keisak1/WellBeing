@@ -14,6 +14,9 @@ interface SurveyDao {
     @Query("SELECT * FROM surveys WHERE id = :id")
     fun getSurveyById(id: Int): Survey?
 
+    @Query("SELECT * FROM questions WHERE surveyId = :id")
+    fun getQuestions(id:Int):List<Question>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSurvey(survey: Survey)
 
@@ -24,7 +27,7 @@ interface SurveyDao {
     suspend fun insertAnswer(answer: Answer)
 
     @Insert
-    suspend fun insertResult(result: Result)
+    suspend fun insertResult(result: ResultQuestions)
 
     @Query("SELECT * FROM surveys")
     fun getAllSurveys(): List<Survey>

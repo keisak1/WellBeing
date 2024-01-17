@@ -1,5 +1,6 @@
 package edu.ufp.pam.wellbeing.data.model
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,7 @@ class SurveyAdapter(private val surveyItems: List<Question>) :
     }
 
     val ratings = MutableList(surveyItems.size) { 0f }
-    val questions = surveyItems
+    val questionsId: MutableList<Int> = surveyItems.map { it.id }.toMutableList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_survey, parent, false)
@@ -27,12 +28,14 @@ class SurveyAdapter(private val surveyItems: List<Question>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = surveyItems[position]
-        holder.questionText.text = item.text
+
+            holder.questionText.text = item.text
         holder.ratingBar.numStars = item.intMax
 
         holder.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
             ratings[position] = rating
         }
+
     }
 
     override fun getItemCount(): Int {

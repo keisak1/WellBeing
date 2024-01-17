@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import edu.ufp.pam.wellbeing.data.model.Answer
 import edu.ufp.pam.wellbeing.data.model.Question
+import edu.ufp.pam.wellbeing.data.model.ResultQuestions
 import edu.ufp.pam.wellbeing.data.model.Survey
 import edu.ufp.pam.wellbeing.data.model.SurveyDao
 import kotlinx.coroutines.Dispatchers
@@ -109,9 +110,8 @@ val wellbeing2Survey = Survey(
 )
 
 
-@Database(entities = [Survey::class, Question::class, Answer::class], version = 3, exportSchema = false)
-@TypeConverters(Converters::class) // Add this line to include your TypeConverters
-
+@Database(entities = [Survey::class, Question::class, Answer::class, ResultQuestions::class], version = 4, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun surveyDao(): SurveyDao

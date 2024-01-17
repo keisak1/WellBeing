@@ -66,7 +66,7 @@ class HomePageActivity : AppCompatActivity() {
             menuItem.icon =
                 ContextCompat.getDrawable(this@HomePageActivity, R.drawable.ic_menu_gallery)
             menuItem.setOnMenuItemClickListener {
-                navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey.id))
+                navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey.id, "username" to intent.getStringExtra("username")))
                 true
             }
             allDestinations.add(menuItemId)
@@ -78,6 +78,7 @@ class HomePageActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
 
         val headerView = navView.getHeaderView(0)
         val usernameTextView = headerView.findViewById<TextView>(R.id.username_header)

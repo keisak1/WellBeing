@@ -1,6 +1,5 @@
 package edu.ufp.pam.wellbeing.ui.gallery
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,22 +11,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import edu.ufp.pam.wellbeing.HomePageActivity
 import edu.ufp.pam.wellbeing.R
 import edu.ufp.pam.wellbeing.data.AppDatabase
 import edu.ufp.pam.wellbeing.data.UserDataBase
-import edu.ufp.pam.wellbeing.data.model.Result
+import edu.ufp.pam.wellbeing.data.model.ResultQuestions
 import edu.ufp.pam.wellbeing.data.model.Survey
 import edu.ufp.pam.wellbeing.data.model.SurveyAdapter
-import edu.ufp.pam.wellbeing.data.model.User
 import edu.ufp.pam.wellbeing.databinding.FragmentGalleryBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.Date
 
 class GalleryFragment : Fragment() {
 
@@ -35,6 +34,8 @@ class GalleryFragment : Fragment() {
 
 
     private val binding get() = _binding!!
+    private var username = ""
+    private var surveyId = -1
     private var survey : Survey? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var surveyAdapter: SurveyAdapter
@@ -51,7 +52,9 @@ class GalleryFragment : Fragment() {
         val root: View = binding.root
 
         arguments?.let { bundle ->
-            val surveyId = bundle.getInt("surveyId", /* default value if not found */ -1)
+            surveyId = bundle.getInt("surveyId", /* default value if not found */ -1)
+            username = bundle.getString("username", /* default value if not found */ "")
+
             if (surveyId != -1) {
                 viewLifecycleOwner.lifecycleScope.launch {
                     val database = context?.let { AppDatabase.getDatabase(it) }
@@ -61,13 +64,14 @@ class GalleryFragment : Fragment() {
                         surveyDao?.getSurveyById(surveyId)
                     }
 
-                    if (survey != null) {
+                    val questions = withContext(Dispatchers.IO){surveyDao?.getQuestions(surveyId)}
+                    if (survey != null && questions != null) {
                         val textView: TextView = binding.textGallery
                         galleryViewModel.text.observe(viewLifecycleOwner) {
                             textView.text = survey.title
                         }
                         recyclerView = binding.questionRecycler
-                        surveyAdapter = SurveyAdapter(survey.questions)
+                        surveyAdapter = SurveyAdapter(questions)
                         recyclerView.layoutManager = LinearLayoutManager(context)
                         recyclerView.adapter = surveyAdapter
 
@@ -78,7 +82,7 @@ class GalleryFragment : Fragment() {
         }
 
 
-        val results: MutableList<Result> = mutableListOf()
+        val results: MutableList<ResultQuestions> = mutableListOf()
         val btnGetResults: Button = binding.button
         btnGetResults.setOnClickListener {
             val adapter = recyclerView.adapter as SurveyAdapter
@@ -87,18 +91,33 @@ class GalleryFragment : Fragment() {
             val surveyDao = database?.surveyDao()
             val userdatabase = context?.let { UserDataBase.getInstance(it) }
             val userDao = userdatabase!!.userDao()
-            val intent = Intent(this, HomePageActivity::class.java)
-            userDao.getUserByDisplayName()
-            intent.getStringExtra("username")
 
             Log.d("Ratings", ratings.toString())
             findNavController().navigate(R.id.nav_home)
             Toast.makeText(requireContext(), "Survey done!", Toast.LENGTH_SHORT).show()
 
-            adapter.questions.forEach({question ->
-                Result()
+            lifecycleScope.launch(Dispatchers.IO) {
+                val user = userDao.getUserByDisplayName(username)
+                
+                withContext(Dispatchers.Main) {
+                    adapter.questionsId.forEachIndexed { index, question ->
+                        val result = ResultQuestions(
+                            userId = user!!.id,
+                            surveyId = surveyId,
+                            questionId = question,
+                            questionRate = ratings[index],
+                            date = LocalDateTime.now()
+                        )
+                        results.add(result)
+                    }
 
-            })
+                    results.forEach { result ->
+                        surveyDao?.insertResult(result = result)
+                    }
+
+                }
+
+            }
         }
 
         return root
