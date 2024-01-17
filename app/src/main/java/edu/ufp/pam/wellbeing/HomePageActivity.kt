@@ -55,28 +55,33 @@ class HomePageActivity : AppCompatActivity() {
         val selectedSurveys: List<Survey> = SurveyRepository.getSurveys()
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
+        navView.menu.clear()
         val navController = findNavController(R.id.nav_host_fragment_content_home_page)
-
 
 
         val staticItems = setOf(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
         val allDestinations = staticItems.toMutableSet()
 
-        selectedSurveys.forEachIndexed { index, survey ->
-            val menuItemId = index + 1000
-            val menuItem = navView.menu.add(R.id.nav_slideshow, menuItemId, Menu.NONE, survey.title)
-            menuItem.icon = ContextCompat.getDrawable(this@HomePageActivity, R.drawable.ic_menu_gallery)
-            menuItem.setOnMenuItemClickListener {
-                navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey.id))
-                true
+        selectedSurveys.forEach { survey ->
+            if (SurveyRepository.getSurveys().contains(survey)) {
+                selectedSurveys.forEachIndexed { index, survey2 ->
+                    val menuItemId = index + 1000
+                    val menuItem =
+                        navView.menu.add(R.id.nav_slideshow, menuItemId, Menu.NONE, survey2.title)
+                    menuItem.icon =
+                        ContextCompat.getDrawable(this@HomePageActivity, R.drawable.ic_menu_gallery)
+                    menuItem.setOnMenuItemClickListener {
+                        navController.navigate(R.id.nav_gallery, bundleOf("surveyId" to survey2.id))
+                        true
+                    }
+                    allDestinations.add(menuItemId)
+                }
             }
-            allDestinations.add(menuItemId)
         }
-
 
         Log.d("DRAWER", allDestinations.toString())
         appBarConfiguration = AppBarConfiguration(
-           allDestinations, drawerLayout
+            allDestinations, drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -87,12 +92,11 @@ class HomePageActivity : AppCompatActivity() {
     }
 
 
-
-   /** private fun addFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.dynamic_fragment_container, fragment)
-        transaction.addToBackStack(null) // Optional: Add to back stack if needed
-        transaction.commit()
+    /** private fun addFragment(fragment: Fragment) {
+    val transaction = supportFragmentManager.beginTransaction()
+    transaction.replace(R.id.dynamic_fragment_container, fragment)
+    transaction.addToBackStack(null) // Optional: Add to back stack if needed
+    transaction.commit()
     }*/
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -112,6 +116,7 @@ class HomePageActivity : AppCompatActivity() {
                 performLogout()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

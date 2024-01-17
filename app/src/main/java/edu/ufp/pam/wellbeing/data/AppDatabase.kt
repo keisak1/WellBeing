@@ -9,7 +9,9 @@ import edu.ufp.pam.wellbeing.data.model.Answer
 import edu.ufp.pam.wellbeing.data.model.Question
 import edu.ufp.pam.wellbeing.data.model.Survey
 import edu.ufp.pam.wellbeing.data.model.SurveyDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 val sleepSurvey = Survey(
@@ -143,40 +145,38 @@ abstract class AppDatabase : RoomDatabase() {
 }
 
 
-// Inserting the surveys and answers into the database
 suspend fun insertSurveysAndAnswersIntoDatabase(context: Context) {
     val database = AppDatabase.getDatabase(context)
     val surveyDao = database.surveyDao()
 
-    // Insert Sleep Survey
-    surveyDao.insertSurvey(sleepSurvey)
-    sleepSurvey.questions.forEach { question ->
-        surveyDao.insertQuestion(question)
+    // Function to check if a survey with a given identifier exists in the database
+    suspend fun getSurveyByIdentifier(title: String): Survey? {
+        return withContext(Dispatchers.IO) {
+            surveyDao.getSurveyByIdentifier(title)
+        }
     }
 
-    // Sample Answers for Sleep Survey
-   // surveyDao.insertAnswer(Answer(surveyId = sleepSurvey.id, questionId = sleepSurvey.questions[0].id, answerText = "2"))
-   // surveyDao.insertAnswer(Answer(surveyId = sleepSurvey.id, questionId = sleepSurvey.questions[1].id, answerText = "3"))
-
-    // Insert Wellbeing1 Survey
-    surveyDao.insertSurvey(wellbeing1Survey)
-    wellbeing1Survey.questions.forEach { question ->
-        surveyDao.insertQuestion(question)
+    // Insert Sleep Survey if not already present
+    if (getSurveyByIdentifier(sleepSurvey.title) == null) {
+        surveyDao.insertSurvey(sleepSurvey)
+        sleepSurvey.questions.forEach { question ->
+            surveyDao.insertQuestion(question)
+        }
     }
 
-    // Sample Answers for Wellbeing1 Survey
-   // surveyDao.insertAnswer(Answer(surveyId = wellbeing1Survey.id, questionId = wellbeing1Survey.questions[0].id, answerText = "3"))
-   // surveyDao.insertAnswer(Answer(surveyId = wellbeing1Survey.id, questionId = wellbeing1Survey.questions[1].id, answerText = "2"))
-    // ... Repeat for other questions
-
-    // Insert Wellbeing2 Survey
-    surveyDao.insertSurvey(wellbeing2Survey)
-    wellbeing2Survey.questions.forEach { question ->
-        surveyDao.insertQuestion(question)
+    // Insert Wellbeing1 Survey if not already present
+    if (getSurveyByIdentifier(wellbeing1Survey.title) == null) {
+        surveyDao.insertSurvey(wellbeing1Survey)
+        wellbeing1Survey.questions.forEach { question ->
+            surveyDao.insertQuestion(question)
+        }
     }
 
-    // Sample Answers for Wellbeing2 Survey
-   // surveyDao.insertAnswer(Answer(surveyId = wellbeing2Survey.id, questionId = wellbeing2Survey.questions[0].id, answerText = "1"))
-   // surveyDao.insertAnswer(Answer(surveyId = wellbeing2Survey.id, questionId = wellbeing2Survey.questions[1].id, answerText = "3"))
-    // ... Repeat for other questions
+    // Insert Wellbeing2 Survey if not already present
+    if (getSurveyByIdentifier(wellbeing2Survey.title) == null) {
+        surveyDao.insertSurvey(wellbeing2Survey)
+        wellbeing2Survey.questions.forEach { question ->
+            surveyDao.insertQuestion(question)
+        }
+    }
 }

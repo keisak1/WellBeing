@@ -8,6 +8,9 @@ import androidx.room.Query
 @Dao
 interface SurveyDao {
 
+    @Query("SELECT * FROM surveys WHERE title = :title")
+    suspend fun getSurveyByIdentifier(title: String): Survey?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSurvey(survey: Survey)
 

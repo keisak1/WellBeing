@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = Intent(this, LoginActivity::class.java)
+
         // Initialize the database
         AppDatabase.initializeDatabase(this)
         lifecycleScope.launch(Dispatchers.IO) {
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
             val surveyDao = database.surveyDao()
             val selectedSurveys: List<Survey> = surveyDao.getAllSurveys()
             SurveyRepository.setSurveys(selectedSurveys)
+
             Log.d("DRAWER", selectedSurveys.toString())
         }
         startActivity(intent)
