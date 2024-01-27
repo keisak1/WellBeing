@@ -31,5 +31,11 @@ interface SurveyDao {
 
     @Query("SELECT * FROM surveys")
     fun getAllSurveys(): List<Survey>
+
+    @Query("SELECT * FROM results")
+    fun getAllResults(): List<ResultQuestions>
+
+    @Query("DELETE FROM results")
+    suspend fun deleteAllResults()
 }
 
